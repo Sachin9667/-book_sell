@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
@@ -13,14 +17,50 @@ class AuthController extends Controller
     }
 
 
-    public function registerSave(Request $request){
+    public function store(Request $request){
+
+        // dd($request->all());
 
         Validator::make($request->all(),[
             'name'=> 'required',
             'email'=> 'required|email',
-            'password'=> 'required|confirmed',
+            'password'=> 'required',
         ])->validate();
 
-        // return view('auth/register');
+        User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make ($request->password),
+            'Level' => 'Admin',
+        ]);
+
+        return redirect()->route('login');
     }
+
+    // for login page
+
+      public function login(){
+        return view('auth/login');
+    }
+
+
+      public function loginAction(Request $request){
+        // return view('auth/login');
+
+        Validator::make($request->all(),[
+            'email'=> 'required|email',
+            'password'=> 'required',
+        ])->validate();
+
+        if(!Auth::attempt($request->only('email','password'), $request->boolean('remember'))){
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed')
+            ]);
+        }
+        $request->session()->regenerate();
+
+        return redirect()->route('dashboard');
+    }
+
+
 }

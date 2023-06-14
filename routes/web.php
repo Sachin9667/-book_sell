@@ -17,10 +17,19 @@ use App\Http\Controllers\AuthController;
 
 
 
-route::controller(AuthController::class)->group(function (){
+Route::controller(AuthController::class)->group(function (){
 
     Route::get('register','register')->name('register');
-    Route::post('register','registerSave')->name('register.save');
+    Route::get('/register/store',[AuthController::class,'store'])->name('register.store');
+
+    Route::get('login','login')->name('login');
+    Route::post('/dashboard',[AuthController::class,'loginAction'])->name('login.loginAction');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('dashboard', function(){
+        return view('dashboard');
+    })->name('dashboard');
 });
 
 

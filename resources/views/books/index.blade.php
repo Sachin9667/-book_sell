@@ -30,7 +30,7 @@
                         <i class="fa fa-edit" style="btn-sm"></i>
                     </a>
                     <a href="books/{{$book->id}}/delete" class="btn btn-danger btn-sm">
-                        <i class="fa fa-trash-o" style="btn-sm"></i>
+                        <i class="fa fa-trash" style="btn-sm"></i>
                     </a>
                 </td>
             </tr>
